@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:todos/utils/todos_util.dart';
+
+final todoFormKey = GlobalKey<FormState>();
+final TextEditingController newTodo = TextEditingController();
 
 class AddATodoScreen extends StatefulWidget {
   const AddATodoScreen({super.key});
@@ -31,9 +36,7 @@ class _AddATodoScreenState extends State<AddATodoScreen> {
           ],
         ),
       ),
-      floatingActionButton: Confirm(
-        theme: theme,
-      ),
+      floatingActionButton: const Confirm(),
     );
   }
 }
@@ -54,10 +57,20 @@ class NavBar extends AppBar {
 class TodoForm extends StatelessWidget {
   const TodoForm({super.key});
 
+  String? validate(value) {
+    if (value == null || value.isEmpty) {
+      return 'please enter some text';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: todoFormKey,
       child: TextFormField(
+        controller: newTodo,
+        validator: (value) => validate(value),
         decoration: const InputDecoration(
           hintText: 'write a new todo',
           border: OutlineInputBorder(
@@ -71,16 +84,41 @@ class TodoForm extends StatelessWidget {
   }
 }
 
-class Confirm extends FloatingActionButton {
-  final ThemeData theme;
+class Confirm extends StatefulWidget {
+  const Confirm({super.key});
 
-  Confirm({super.key, required this.theme})
-      : super(
-          onPressed: () {},
-          backgroundColor: theme.colorScheme.primary,
-          child: Icon(
-            Icons.check,
-            color: theme.colorScheme.onPrimary,
-          ),
-        );
+  @override
+  State<Confirm> createState() => _ConfirmState();
+}
+
+class _ConfirmState extends State<Confirm> {
+  bool isLoading = false;
+
+  void addTodo() async {
+    if (todoFormKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      await TodosUtil().add(newTodo.text);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return FloatingActionButton(
+      onPressed: addTodo,
+      backgroundColor: theme.colorScheme.primary,
+      child: isLoading
+          ? SpinKitPulse(
+              color: theme.colorScheme.onPrimary,
+              size: 24,
+            )
+          : Icon(
+              Icons.check,
+              color: theme.colorScheme.onPrimary,
+            ),
+    );
+  }
 }
