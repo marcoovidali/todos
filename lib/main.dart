@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todos/screens/add_a_todo_screen.dart';
 import 'utils/firebase_util.dart';
 
@@ -13,15 +14,20 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'todos',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        fontFamily: 'Quicksand',
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) => AppState(),
+      child: MaterialApp(
+        title: 'todos',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          fontFamily: 'Quicksand',
+          useMaterial3: true,
+        ),
+        debugShowCheckedModeBanner: false,
+        home: const AddATodoScreen(),
       ),
-      debugShowCheckedModeBanner: false,
-      home: const AddATodoScreen(),
     );
   }
 }
+
+class AppState extends ChangeNotifier {}
