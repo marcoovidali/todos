@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todos/screens/add_a_todo_screen.dart';
+import 'package:todos/screens/home_screen.dart';
 import 'utils/firebase_util.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class App extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const AddATodoScreen(),
+      home: const HomeScreen(),
     );
   }
 }

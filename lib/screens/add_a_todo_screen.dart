@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:todos/utils/navigator_util.dart';
 import 'package:todos/utils/todos_util.dart';
-
-final todoFormKey = GlobalKey<FormState>();
-final TextEditingController newTodo = TextEditingController();
 
 class AddATodoScreen extends StatefulWidget {
   const AddATodoScreen({super.key});
@@ -13,6 +11,17 @@ class AddATodoScreen extends StatefulWidget {
 }
 
 class _AddATodoScreenState extends State<AddATodoScreen> {
+  GlobalKey<FormState> todoFormKey = GlobalKey();
+  final TextEditingController newTodo = TextEditingController();
+
+  GlobalKey<FormState> getTodoFormKey() {
+    return todoFormKey;
+  }
+
+  TextEditingController getNewTodo() {
+    return newTodo;
+  }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -21,7 +30,10 @@ class _AddATodoScreenState extends State<AddATodoScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: NavBar(theme: theme),
+      appBar: NavBar(
+        theme: theme,
+        context: context,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -30,24 +42,31 @@ class _AddATodoScreenState extends State<AddATodoScreen> {
             Center(
               child: SizedBox(
                 width: todoFormWidth,
-                child: const TodoForm(),
+                child: TodoForm(
+                  getTodoFormKey: getTodoFormKey,
+                  getNewTodo: getNewTodo,
+                ),
               ),
             )
           ],
         ),
       ),
-      floatingActionButton: const Confirm(),
+      floatingActionButton: Confirm(
+        getNewTodo: getNewTodo,
+        getTodoFormKey: getTodoFormKey,
+      ),
     );
   }
 }
 
 class NavBar extends AppBar {
   final ThemeData theme;
+  final BuildContext context;
 
-  NavBar({super.key, required this.theme})
+  NavBar({super.key, required this.theme, required this.context})
       : super(
             leading: IconButton(
-                onPressed: () {},
+                onPressed: () => NavigatorUtil().home(context),
                 icon: Icon(
                   Icons.arrow_back,
                   color: theme.colorScheme.primary,
@@ -55,7 +74,11 @@ class NavBar extends AppBar {
 }
 
 class TodoForm extends StatelessWidget {
-  const TodoForm({super.key});
+  final Function getTodoFormKey;
+  final Function getNewTodo;
+
+  const TodoForm(
+      {super.key, required this.getTodoFormKey, required this.getNewTodo});
 
   String? validate(value) {
     if (value == null || value.isEmpty) {
@@ -67,9 +90,9 @@ class TodoForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: todoFormKey,
+      key: getTodoFormKey(),
       child: TextFormField(
-        controller: newTodo,
+        controller: getNewTodo(),
         validator: (value) => validate(value),
         decoration: const InputDecoration(
           hintText: 'write a new todo',
@@ -85,21 +108,31 @@ class TodoForm extends StatelessWidget {
 }
 
 class Confirm extends StatefulWidget {
-  const Confirm({super.key});
+  final Function getTodoFormKey;
+  final Function getNewTodo;
+
+  const Confirm(
+      {super.key, required this.getNewTodo, required this.getTodoFormKey});
 
   @override
-  State<Confirm> createState() => _ConfirmState();
+  State<Confirm> createState() => _ConfirmState(getTodoFormKey, getNewTodo);
 }
 
 class _ConfirmState extends State<Confirm> {
+  final Function getTodoFormKey;
+  final Function getNewTodo;
+
   bool isLoading = false;
 
+  _ConfirmState(this.getTodoFormKey, this.getNewTodo);
+
   void addTodo() async {
-    if (todoFormKey.currentState!.validate()) {
+    if (getTodoFormKey().currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
-      await TodosUtil().add(newTodo.text);
+      await TodosUtil().add(getNewTodo().text);
+      NavigatorUtil().home(context);
     }
   }
 
