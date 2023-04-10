@@ -6,21 +6,28 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      floatingActionButton: AddATodo(),
+    final ThemeData theme = Theme.of(context);
+
+    return Scaffold(
+      floatingActionButton: AddATodo(
+        theme: theme,
+      ),
     );
   }
 }
 
 class AddATodo extends StatelessWidget {
-  const AddATodo({super.key});
+  const AddATodo({
+    super.key,
+    required this.theme,
+  });
+
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
     return FloatingActionButton(
-      onPressed: () => NavigatorUtil().addATodo(context),
+      onPressed: () => NavigatorUtil().addATodo(context, theme),
       backgroundColor: theme.colorScheme.primary,
       child: Icon(
         Icons.add,

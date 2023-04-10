@@ -1,11 +1,15 @@
 class TodoModel {
+  const TodoModel(
+    this.uuid,
+    this.text,
+    this.done,
+  );
+
   final String uuid;
   final String text;
   final bool done;
 
-  TodoModel(this.uuid, this.text, this.done);
-
-  toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'uuid': uuid,
       'text': text,

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 class FirebaseUtil {
-  connect() async {
+  Future<void> connect() async {
     if (kIsWeb) {
       await Firebase.initializeApp(
         options: const FirebaseOptions(
