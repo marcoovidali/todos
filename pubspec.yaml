@@ -40,6 +40,7 @@ dependencies:
   flutter_spinkit: ^5.1.0
   shared_preferences: ^2.1.0
   uuid: ^3.0.7
+  flutter_launcher_icons: ^0.13.0
 
 dev_dependencies:
   flutter_test:
@@ -86,3 +87,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  ios: true
+  image_path: 'assets/icon.jpg'
+  macos:
+    generate: true
+    image_path: "assets/icon.jpg"
