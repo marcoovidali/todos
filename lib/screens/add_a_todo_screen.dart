@@ -25,6 +25,7 @@ class _AddATodoScreenState extends State<AddATodoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      backgroundColor: widget.theme.colorScheme.primaryContainer,
       appBar: NavBar(
         theme: widget.theme,
         context: context,
@@ -40,6 +41,7 @@ class _AddATodoScreenState extends State<AddATodoScreen> {
                 child: TodoForm(
                   todoFormKey: todoFormKey,
                   newTodo: newTodo,
+                  theme: widget.theme,
                 ),
               ),
             )
@@ -61,6 +63,7 @@ class NavBar extends AppBar {
 
   NavBar({super.key, required this.theme, required this.context})
       : super(
+          backgroundColor: theme.colorScheme.primaryContainer,
           leading: IconButton(
             onPressed: () => NavigatorUtil().home(context, theme),
             icon: Icon(
@@ -72,14 +75,15 @@ class NavBar extends AppBar {
 }
 
 class TodoForm extends StatelessWidget {
-  const TodoForm({
-    super.key,
-    required this.todoFormKey,
-    required this.newTodo,
-  });
+  const TodoForm(
+      {super.key,
+      required this.todoFormKey,
+      required this.newTodo,
+      required this.theme});
 
   final GlobalKey<FormState> todoFormKey;
   final TextEditingController newTodo;
+  final ThemeData theme;
 
   String? validate(value) {
     if (value == null || value.isEmpty) {
@@ -95,12 +99,20 @@ class TodoForm extends StatelessWidget {
       child: TextFormField(
         controller: newTodo,
         validator: (value) => validate(value),
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText: 'write a new todo',
-          border: OutlineInputBorder(
+          hintStyle: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(16),
             ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(16),
+            ),
+            borderSide: BorderSide(
+                width: 1, color: theme.colorScheme.onPrimaryContainer),
           ),
         ),
       ),
