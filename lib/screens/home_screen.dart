@@ -40,15 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (snapshot.data!.docs.isEmpty)
                   AddATodoToGetStarted(theme: theme)
                 else
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Todos(
-                        theme: theme,
-                        docs: snapshot.data!.docs,
-                        deleteTodo: deleteTodo,
-                      ),
-                    ),
+                  Todos(
+                    theme: theme,
+                    docs: snapshot.data!.docs,
+                    deleteTodo: deleteTodo,
                   )
               else
                 Loading(theme: theme)
@@ -57,60 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
           floatingActionButton: AddATodo(theme: theme),
         );
       },
-    );
-  }
-}
-
-class Todos extends StatefulWidget {
-  const Todos({
-    super.key,
-    required this.theme,
-    required this.docs,
-    required this.deleteTodo,
-  });
-
-  final ThemeData theme;
-  final List<DocumentSnapshot> docs;
-  final Function deleteTodo;
-
-  @override
-  State<Todos> createState() => _TodosState();
-}
-
-class _TodosState extends State<Todos> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        for (final doc in widget.docs)
-          Card(
-            color: widget.theme.colorScheme.primary,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      doc['text'],
-                      style: TextStyle(
-                        color: widget.theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    color: widget.theme.colorScheme.onPrimary,
-                    iconSize: 19,
-                    onPressed: () => widget.deleteTodo(doc.id),
-                    icon: const Icon(Icons.delete),
-                  )
-                ],
-              ),
-            ),
-          ),
-        const SizedBox(
-          height: 70,
-        )
-      ],
     );
   }
 }
@@ -138,6 +79,65 @@ class AddATodoToGetStarted extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Todos extends StatefulWidget {
+  const Todos({
+    super.key,
+    required this.theme,
+    required this.docs,
+    required this.deleteTodo,
+  });
+
+  final ThemeData theme;
+  final List<DocumentSnapshot> docs;
+  final Function deleteTodo;
+
+  @override
+  State<Todos> createState() => _TodosState();
+}
+
+class _TodosState extends State<Todos> {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: ListView(
+          children: [
+            for (final doc in widget.docs)
+              Card(
+                color: widget.theme.colorScheme.primary,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          doc['text'],
+                          style: TextStyle(
+                            color: widget.theme.colorScheme.onPrimary,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        color: widget.theme.colorScheme.onPrimary,
+                        iconSize: 19,
+                        onPressed: () => widget.deleteTodo(doc.id),
+                        icon: const Icon(Icons.delete),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            const SizedBox(
+              height: 70,
+            )
+          ],
+        ),
       ),
     );
   }
