@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     theme: theme,
                     docs: snapshot.data!.docs,
                     deleteTodo: deleteTodo,
+                    todosWidth: todosWidth,
                   )
               else
                 Loading(theme: theme)
@@ -85,16 +86,17 @@ class AddATodoToGetStarted extends StatelessWidget {
 }
 
 class Todos extends StatefulWidget {
-  const Todos({
-    super.key,
-    required this.theme,
-    required this.docs,
-    required this.deleteTodo,
-  });
+  const Todos(
+      {super.key,
+      required this.theme,
+      required this.docs,
+      required this.deleteTodo,
+      required this.todosWidth});
 
   final ThemeData theme;
   final List<DocumentSnapshot> docs;
   final Function deleteTodo;
+  final double todosWidth;
 
   @override
   State<Todos> createState() => _TodosState();
@@ -106,37 +108,42 @@ class _TodosState extends State<Todos> {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: ListView(
-          children: [
-            for (final doc in widget.docs)
-              Card(
-                color: widget.theme.colorScheme.primary,
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          doc['text'],
-                          style: TextStyle(
-                            color: widget.theme.colorScheme.onPrimary,
+        child: Center(
+          child: SizedBox(
+            width: widget.todosWidth,
+            child: ListView(
+              children: [
+                for (final doc in widget.docs)
+                  Card(
+                    color: widget.theme.colorScheme.primary,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              doc['text'],
+                              style: TextStyle(
+                                color: widget.theme.colorScheme.onPrimary,
+                              ),
+                            ),
                           ),
-                        ),
+                          IconButton(
+                            color: widget.theme.colorScheme.onPrimary,
+                            iconSize: 19,
+                            onPressed: () => widget.deleteTodo(doc.id),
+                            icon: const Icon(Icons.delete),
+                          )
+                        ],
                       ),
-                      IconButton(
-                        color: widget.theme.colorScheme.onPrimary,
-                        iconSize: 19,
-                        onPressed: () => widget.deleteTodo(doc.id),
-                        icon: const Icon(Icons.delete),
-                      )
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            const SizedBox(
-              height: 70,
-            )
-          ],
+                const SizedBox(
+                  height: 70,
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
