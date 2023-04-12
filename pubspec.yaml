@@ -90,10 +90,11 @@ flutter:
 
 flutter_icons:
   ios: true
-  image_path: 'assets/icon.jpg'
+  image_path: 'assets/icon.png'
+  remove_alpha_ios: true
   macos:
     generate: true
-    image_path: "assets/icon.jpg"
+    image_path: "assets/icon.png"
   web:
     generate: true
-    image_path: "assets/icon.jpg"
+    image_path: "assets/icon.png"
