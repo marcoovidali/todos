@@ -25,6 +25,15 @@ class TodoUtil {
   }
 
   void delete(String docId) async {
-    await firestore.collection('todos').doc(docId).delete();
+    DocumentReference doc = firestore.collection('todos').doc(docId);
+
+    doc.get().then((snapshot) async {
+      String uuid = snapshot.get('uuid');
+
+      // checking if todo uuid is equal to stored uuid
+      if (uuid == await UuidUtil().get()) {
+        doc.delete();
+      }
+    });
   }
 }
